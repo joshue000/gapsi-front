@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { Product } from '../../core/services/product.service';
 import { loadProducts, loadMoreProducts, setPageSize } from '../../store/product.actions';
 import { ProductsStateBuilder } from './products-state.builder';
+import { AbstractScrollComponent } from '../../shared/components/abstract-scroll.component';
 
 @Component({
   selector: 'app-products',
@@ -12,14 +12,11 @@ import { ProductsStateBuilder } from './products-state.builder';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit, OnDestroy, AfterViewInit {
-  private readonly SCROLL_THRESHOLD = 200;
-  private readonly LOAD_MORE_DELAY = 500;
+export class ProductsComponent extends AbstractScrollComponent implements OnInit {
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly MOBILE_PAGE_SIZE = 4;
   private readonly DESKTOP_PAGE_SIZE = 8;
 
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   products: Product[] = [];
   error: string | null = null;
   isLoading: boolean = false;
@@ -27,10 +24,10 @@ export class ProductsComponent implements OnInit, OnDestroy, AfterViewInit {
   cartCount: number = 0;
   cartTotal: number = 0;
   private subscription?: Subscription;
-  private scrollSubscription?: Subscription;
-  private isLoadingMore = false;
 
-  constructor(private store: Store, private cdr: ChangeDetectorRef) {}
+  constructor(private store: Store, private cdr: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.setInitialPageSize();
@@ -48,26 +45,12 @@ export class ProductsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    if (this.scrollContainer) {
-      this.scrollSubscription = fromEvent(this.scrollContainer.nativeElement, 'scroll')
-        .pipe(debounceTime(100))
-        .subscribe(() => this.onScroll());
-    }
+  protected canLoadMore(): boolean {
+    return this.hasMore;
   }
 
-  onScroll(): void {
-    if (this.isLoadingMore || !this.hasMore) return;
-    
-    const element = this.scrollContainer.nativeElement;
-    const scrollPosition = element.scrollTop + element.clientHeight;
-    const scrollHeight = element.scrollHeight;
-    
-    if (scrollPosition >= scrollHeight - this.SCROLL_THRESHOLD) {
-      this.isLoadingMore = true;
-      this.store.dispatch(loadMoreProducts());
-      setTimeout(() => this.isLoadingMore = false, this.LOAD_MORE_DELAY);
-    }
+  protected onLoadMore(): void {
+    this.store.dispatch(loadMoreProducts());
   }
 
   onResize(): void {
@@ -80,8 +63,8 @@ export class ProductsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(setPageSize({ pageSize }));
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.subscription?.unsubscribe();
-    this.scrollSubscription?.unsubscribe();
   }
 }
