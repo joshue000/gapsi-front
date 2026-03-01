@@ -1,16 +1,49 @@
 :host {
   display: block;
   background-color: #f9fafb;
+  height: calc(100vh - 68px);
+  overflow: hidden;
 }
 
 .productos-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px;
+  height: 100%;
 }
 
 app-cart {
-  max-width: 400px;
-  margin: 0 auto;
+  flex-shrink: 0;
+  padding: 20px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.products-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.productos-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: white;
+  border-top: 2px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.footer-item i {
+  color: #3b82f6;
+  font-size: 18px;
 }

@@ -12,3 +12,10 @@ export const loadProductsFailure = createAction(
   '[Products] Load Products Failure',
   props<{ error: string }>()
 );
+
+export const loadMoreProducts = createAction('[Products] Load More Products');
+
+export const setPageSize = createAction(
+  '[Products] Set Page Size',
+  props<{ pageSize: number }>()
+);

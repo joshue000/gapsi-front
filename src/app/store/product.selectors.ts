@@ -5,7 +5,7 @@ export const selectProductState = createFeatureSelector<ProductState>('products'
 
 export const selectAllProducts = createSelector(
   selectProductState,
-  (state) => state.products
+  (state) => state.displayedProducts
 );
 
 export const selectProductsLoading = createSelector(
@@ -16,4 +16,9 @@ export const selectProductsLoading = createSelector(
 export const selectProductsError = createSelector(
   selectProductState,
   (state) => state.error
+);
+
+export const selectHasMoreProducts = createSelector(
+  selectProductState,
+  (state) => state.currentIndex < state.allProducts.length
 );
