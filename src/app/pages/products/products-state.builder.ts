@@ -1,3 +1,6 @@
+// [DP:Builder] State Builder Pattern
+// Consolidates multiple observables into a single state stream
+// Reduces complexity from 6 subscriptions to 1
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';

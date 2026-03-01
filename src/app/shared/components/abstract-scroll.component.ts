@@ -1,3 +1,6 @@
+// [DP:Template] Template Method Pattern
+// Defines skeleton of scroll algorithm, letting subclasses override specific steps
+// Provides reusable scroll behavior with canLoadMore() and onLoadMore() hooks
 import { Directive, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';

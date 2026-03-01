@@ -1,3 +1,5 @@
+// [DP:Singleton] Singleton Pattern via Angular DI
+// providedIn: 'root' ensures single instance across application
 import { Injectable } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';

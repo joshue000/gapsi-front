@@ -1,3 +1,6 @@
+// [DP:Factory] Factory Pattern
+// Encapsulates drag icon creation using Renderer2 for safe DOM manipulation
+// Provides reusable icon creation logic
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { ConstantsService } from '../../../core/services/constants.service';
 
