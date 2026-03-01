@@ -1,0 +1,7 @@
+<div class="cart-container" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+  <div class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="badge" *ngIf="(cartCount$ | async) as count">{{ count }}</span>
+  </div>
+  <p class="cart-text">Arrastra productos aquí</p>
+</div>

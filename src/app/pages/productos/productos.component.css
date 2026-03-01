@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  background-color: #f9fafb;
+}
+
+.productos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+app-cart {
+  max-width: 400px;
+  margin: 0 auto;
+}

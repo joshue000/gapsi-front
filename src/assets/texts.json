@@ -1,0 +1,71 @@
+{
+  "header": {
+    "title": "Administración de Productos"
+  },
+  "table": {
+    "columns": {
+      "logo": "Logo",
+      "name": "Nombre del producto",
+      "description": "Descripción",
+      "releaseDate": "Fecha de liberación",
+      "revisionDate": "Fecha de reestructuración"
+    },
+    "results": "Resultados",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "dots": "..."
+  },
+  "form": {
+    "title": "Formulario de Registro",
+    "fields": {
+      "id": "ID",
+      "logo": "Logo",
+      "name": "Nombre",
+      "description": "Descripción",
+      "releaseDate": "Fecha de Liberación",
+      "revisionDate": "Fecha de Revisión"
+    },
+    "buttons": {
+      "submit": "Enviar", 
+      "cancel": "Reiniciar",
+      "getBack": "Volver"
+    },
+    "error": {
+      "id": "El ID debe tener entre 3 - 10 caracteres",
+      "name": "El nombre debe tener entre 5 - 100 caracteres",
+      "description": "La descripción debe tener entre 10 - 200 caracteres",
+      "required": "Este campo es obligatorio",
+      "invalidReleaseDate": "La fecha de liberación debe ser mayor o igual a la fecha actual",
+      "invalidRevisionDate": "La fecha de revisión debe ser exactamente un año después de la fecha de liberación"
+    }
+  }, 
+  "search": {
+    "placeholder": "Buscar producto..."
+  },
+  "loading": {
+    "message": "Cargando productos..."
+  },
+  "dropdown": {
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "modals": {
+    "delete": {
+      "title": "Eliminar producto",
+      "message": "¿Estás seguro de eliminar el producto",
+      "confirmText": "Eliminar",
+      "cancelText": "Cancelar"
+    },
+    "success": {
+      "title": "Éxito",
+      "productDeleted": "Producto eliminado correctamente",
+      "changesSaved": "Los cambios se guardaron correctamente"
+    },
+    "error": {
+      "title": "Error",
+      "productExists": "El ID del producto ya existe",
+      "generic": "Ocurrió un error al procesar la solicitud",
+      "deleteError": "Ocurrió un error al eliminar el producto"
+    }
+  }
+}

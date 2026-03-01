@@ -1,0 +1,15 @@
+<div class="product-card" 
+     [class.dragging]="isDragging"
+     draggable="true" 
+     (dragstart)="onDragStart($event)"
+     (dragend)="onDragEnd()">
+  <img src="assets/images/product.jpg" [alt]="product.name" class="product-image" />
+  <hr />
+  <div class="product-info">
+    <div class="product-header">
+      <span class="product-name">{{ product.name }}</span>
+      <span class="product-price">${{ product.price | number:'1.2-2' }}</span>
+    </div>
+    <p class="product-description">{{ product.description }}</p>
+  </div>
+</div>

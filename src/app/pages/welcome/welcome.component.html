@@ -1,0 +1,32 @@
+<div class="welcome-container">
+  <div class="welcome-content" *ngIf="error$ | async as error; else loadingOrContent">
+    <app-error-message [message]="error"></app-error-message>
+  </div>
+  
+  <ng-template #loadingOrContent>
+    <div class="welcome-content" *ngIf="!(welcome$ | async); else content">
+      <div class="skeleton-logo"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-button"></div>
+    </div>
+    
+    <ng-template #content>
+      <div class="welcome-content">
+        <div class="logo-wrapper">
+          <img src="assets/images/gapsi-logo.png" alt="Gapsi Logo" class="logo" />
+        </div>
+        
+        <h1 class="welcome-text">{{ welcome$ | async }}</h1>
+        
+        <button mat-raised-button color="primary" (click)="onContinue()">
+          Continuar
+          <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </ng-template>
+  </ng-template>
+  
+  <footer class="footer">
+    <span>{{ version$ | async }}</span>
+  </footer>
+</div>

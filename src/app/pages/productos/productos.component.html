@@ -1,0 +1,5 @@
+<div class="productos-container">
+  <app-cart></app-cart>
+  <app-error-message *ngIf="error" [message]="error"></app-error-message>
+  <app-product-list *ngIf="!error" [products]="products" [isLoading]="isLoading"></app-product-list>
+</div>

@@ -1,0 +1,22 @@
+<header class="header" [class.products-page]="isProductsPage">
+  <div class="logo-container">
+    <img src="assets/images/gapsi-logo.png" alt="Gapsi Logo" class="logo-img" />
+    <span>{{ title }}</span>
+  </div>
+  
+  <div class="menu-container" *ngIf="isProductsPage">
+    <button class="menu-button" (click)="toggleMenu()">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+    <div class="dropdown-menu" [style.display]="showMenu ? 'block' : 'none'">
+      <button class="dropdown-item" (click)="goHome()">
+        <i class="fas fa-home me-2"></i>
+        Home
+      </button>
+      <button class="dropdown-item" (click)="reiniciar()">
+        <i class="fas fa-redo me-2"></i>
+        Reiniciar
+      </button>
+    </div>
+  </div>
+</header>
