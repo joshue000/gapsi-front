@@ -17,14 +17,14 @@ import { VisitorEffects } from './store/visitor.effects';
 import { ProductEffects } from './store/product.effects';
 import { SplashComponent } from './pages/splash/splash.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
-import { ProductosComponent } from './pages/productos/productos.component';
+import { ProductsComponent } from './pages/products/products.component';
 
 @NgModule({
   declarations: [
     App,
     SplashComponent,
     WelcomeComponent,
-    ProductosComponent
+    ProductsComponent
   ],
   imports: [
     BrowserModule,

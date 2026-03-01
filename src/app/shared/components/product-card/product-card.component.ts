@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Product } from '../../../core/services/product.service';
+import { ConstantsService } from '../../../core/services/constants.service';
 
 @Component({
   selector: 'app-product-card',
@@ -11,18 +12,21 @@ export class ProductCardComponent {
   @Input() product!: Product;
   isDragging = false;
 
+  constructor(private constants: ConstantsService) {}
+
   onDragStart(event: DragEvent): void {
     event.dataTransfer?.setData('productSku', this.product.sku);
     this.isDragging = true;
     
+    const config = this.constants.dragIcon;
     const dragIcon = document.createElement('div');
-    dragIcon.innerHTML = '<i class="fas fa-shopping-cart" style="font-size: 48px; color: #3b82f6;"></i>';
+    dragIcon.innerHTML = `<i class="${config.iconClass}" style="font-size: ${config.fontSize}; color: ${config.color};"></i>`;
     dragIcon.style.position = 'absolute';
-    dragIcon.style.top = '-1000px';
+    dragIcon.style.top = config.offsetTop;
     document.body.appendChild(dragIcon);
-    event.dataTransfer?.setDragImage(dragIcon, 24, 24);
+    event.dataTransfer?.setDragImage(dragIcon, config.imageOffsetX, config.imageOffsetY);
     
-    setTimeout(() => document.body.removeChild(dragIcon), 0);
+    setTimeout(() => document.body.removeChild(dragIcon), this.constants.timing.dragIconCleanup);
   }
 
   onDragEnd(): void {
