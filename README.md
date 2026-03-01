@@ -138,7 +138,7 @@ abstract onLoadMore(): void;
 
 ### Prerequisites
 
-- Node.js 20.19+ or 22.12+
+- Node.js 24+
 - npm 10+
 - Angular CLI 21+
 
