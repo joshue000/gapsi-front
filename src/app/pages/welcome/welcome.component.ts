@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { selectWelcome, selectVersion } from '../../store/visitor.selectors';
 import { selectVisitorError } from '../../store/visitor.selectors';
 import { loadVisitor } from '../../store/visitor.actions';
+import { ConstantsService } from '../../core/services/constants.service';
 
 @Component({
   selector: 'app-welcome',
@@ -17,7 +18,11 @@ export class WelcomeComponent implements OnInit {
   version$: Observable<string | null>;
   error$: Observable<string | null>;
 
-  constructor(private store: Store, private router: Router) {
+  constructor(
+    private store: Store,
+    private router: Router,
+    private constants: ConstantsService
+  ) {
     this.welcome$ = this.store.select(selectWelcome);
     this.version$ = this.store.select(selectVersion);
     this.error$ = this.store.select(selectVisitorError);
@@ -28,6 +33,6 @@ export class WelcomeComponent implements OnInit {
   }
 
   onContinue(): void {
-    this.router.navigate(['/productos']);
+    this.router.navigate([this.constants.routes.productos]);
   }
 }

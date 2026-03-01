@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,6 +15,9 @@ export interface ProductsComponentState {
   cartTotal: number;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class ProductsStateBuilder {
   constructor(private store: Store) {}
 

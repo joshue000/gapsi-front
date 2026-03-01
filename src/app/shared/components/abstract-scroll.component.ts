@@ -11,6 +11,7 @@ export abstract class AbstractScrollComponent implements AfterViewInit, OnDestro
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   protected scrollSubscription?: Subscription;
   protected isLoadingMore = false;
+  private loadMoreTimeout?: ReturnType<typeof setTimeout>;
 
   ngAfterViewInit(): void {
     this.initializeScrollListener();
@@ -32,7 +33,7 @@ export abstract class AbstractScrollComponent implements AfterViewInit, OnDestro
     if (this.isNearBottom(element)) {
       this.isLoadingMore = true;
       this.onLoadMore();
-      setTimeout(() => this.isLoadingMore = false, this.LOAD_MORE_DELAY);
+      this.loadMoreTimeout = setTimeout(() => this.isLoadingMore = false, this.LOAD_MORE_DELAY);
     }
   }
 
@@ -47,5 +48,8 @@ export abstract class AbstractScrollComponent implements AfterViewInit, OnDestro
 
   ngOnDestroy(): void {
     this.scrollSubscription?.unsubscribe();
+    if (this.loadMoreTimeout) {
+      clearTimeout(this.loadMoreTimeout);
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { filter } from 'rxjs/operators';
 import { clearCart } from '../../../store/cart.actions';
 import { ConstantsService } from '../../../core/services/constants.service';
 
@@ -11,17 +12,29 @@ import { ConstantsService } from '../../../core/services/constants.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  public title: string = '';
-  public showMenu: boolean = false;
+  title: string = '';
+  showMenu: boolean = false;
+  isProductsPage: boolean = false;
 
   constructor(
-    public router: Router,
+    private router: Router,
     private store: Store,
     private constants: ConstantsService
   ) {}
 
   ngOnInit(): void {
     this.title = this.constants.headerTitle;
+    this.updateProductsPageStatus();
+    
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updateProductsPageStatus();
+    });
+  }
+
+  private updateProductsPageStatus(): void {
+    this.isProductsPage = this.router.url === this.constants.routes.productos;
   }
 
   toggleMenu(): void {
@@ -36,9 +49,5 @@ export class HeaderComponent implements OnInit {
   goHome(): void {
     this.showMenu = false;
     this.router.navigate([this.constants.routes.welcome]);
-  }
-
-  get isProductsPage(): boolean {
-    return this.router.url === this.constants.routes.productos;
   }
 }

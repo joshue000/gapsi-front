@@ -4,61 +4,45 @@
 
 ### products.component.ts
 
-**AP-1: Manual Change Detection**
+**✅ AP-1: Manual Change Detection - RESUELTO**
 - **Línea 43**: Llamada manual a `cdr.detectChanges()` en cada actualización de estado.
-- **Problema**: Indica que el componente no está usando la estrategia de detección de cambios de Angular correctamente.
-- **Impacto**: Puede causar problemas de rendimiento y dificulta el debugging.
-- **Solución**: Usar `async pipe` en el template o `ChangeDetectionStrategy.OnPush`.
+- **Solución aplicada**: Implementado `ChangeDetectionStrategy.OnPush` y refactorizado para usar `async pipe` en el template, eliminando la necesidad de change detection manual.
 
-**AP-2: Acceso directo a window.innerWidth**
+**✅ AP-2: Acceso directo a window.innerWidth - RESUELTO**
 - **Línea 59**: `window.innerWidth` accedido directamente sin abstracción.
-- **Problema**: Dificulta testing (no se puede mockear fácilmente) y viola el principio de inyección de dependencias.
-- **Impacto**: Tests unitarios requieren configuración compleja del objeto window.
-- **Solución**: Crear un servicio `WindowService` o `ViewportService` inyectable.
+- **Solución aplicada**: Creado `ViewportService` inyectable que abstrae el acceso a window, mejorando testabilidad y aplicando inyección de dependencias.
 
-**AP-3: Suscripción manual sin unsubscribe automático**
-- **Línea 36**: Suscripción manual que requiere cleanup en ngOnDestroy.
-- **Problema**: Riesgo de memory leaks si se olvida el unsubscribe.
-- **Impacto**: Posibles fugas de memoria en navegación frecuente.
-- **Solución**: Usar `async pipe`, `takeUntil`, o `DestroyRef` (Angular 16+).
+**✅ AP-3: Suscripción manual sin unsubscribe automático - RESUELTO**
+- **Línea 36**: Suscripción manual que requería cleanup en ngOnDestroy.
+- **Solución aplicada**: Refactorizado para usar `async pipe` en el template, eliminando la necesidad de suscripciones manuales y cleanup.
 
 ### header.component.ts
 
-**AP-4: Router público en constructor**
+**✅ AP-4: Router público en constructor - RESUELTO**
 - **Línea 17**: `public router: Router` expuesto públicamente.
-- **Problema**: Viola encapsulación, permite acceso directo desde el template.
-- **Impacto**: El template puede acceder a métodos del router directamente, creando acoplamiento.
-- **Solución**: Cambiar a `private` y crear métodos/propiedades específicas.
+- **Solución aplicada**: Cambiado a `private`, eliminando acceso directo desde el template y mejorando encapsulación.
 
-**AP-5: Getter con lógica de negocio**
-- **Línea 41**: `get isProductsPage()` ejecuta comparación en cada ciclo de detección.
-- **Problema**: Se ejecuta múltiples veces innecesariamente en cada change detection.
-- **Impacto**: Puede afectar rendimiento si la lógica es compleja.
-- **Solución**: Calcular una vez en ngOnInit o usar observable con async pipe.
+**✅ AP-5: Getter con lógica de negocio - RESUELTO**
+- **Línea 41**: `get isProductsPage()` ejecutaba comparación en cada ciclo de detección.
+- **Solución aplicada**: Convertido a propiedad que se calcula en ngOnInit y se actualiza con eventos de navegación, eliminando ejecuciones innecesarias.
 
 ### app.ts
 
-**AP-6: Suscripción sin unsubscribe**
+**✅ AP-6: Suscripción sin unsubscribe - RESUELTO**
 - **Línea 20-25**: Suscripción a router.events sin cleanup.
-- **Problema**: Memory leak potencial, aunque el componente root vive toda la aplicación.
-- **Impacto**: Bajo en este caso específico, pero mala práctica.
-- **Solución**: Usar `takeUntilDestroyed()` o guardar subscription para cleanup.
+- **Solución aplicada**: Implementado patrón `takeUntil` con Subject `destroy$` para cleanup automático de la suscripción en ngOnDestroy.
 
 ### welcome.component.ts
 
-**AP-7: Ruta hardcodeada en navegación**
+**✅ AP-7: Ruta hardcodeada en navegación - RESUELTO**
 - **Línea 30**: `this.router.navigate(['/productos'])` con string literal.
-- **Problema**: Viola DRY, la ruta está duplicada en múltiples lugares.
-- **Impacto**: Dificulta refactorización de rutas.
-- **Solución**: Ya existe `constants.routes.productos`, debería usarse.
+- **Solución aplicada**: Reemplazado string literal por `constants.routes.productos`, aplicando principio DRY y facilitando refactorización de rutas.
 
 ### abstract-scroll.component.ts
 
-**AP-8: setTimeout sin clearTimeout**
+**✅ AP-8: setTimeout sin clearTimeout - RESUELTO**
 - **Línea 33**: `setTimeout` sin guardar referencia para posible cancelación.
-- **Problema**: Si el componente se destruye antes del timeout, puede causar errores.
-- **Impacto**: Posibles errores en consola o comportamiento inesperado.
-- **Solución**: Guardar referencia del timeout y limpiarlo en ngOnDestroy.
+- **Solución aplicada**: Guardada referencia del timeout en `loadMoreTimeout` y agregado `clearTimeout` en ngOnDestroy para cleanup seguro.
 
 ---
 
@@ -66,11 +50,9 @@
 
 ### products.component.ts
 
-**MP-1: Inicialización de propiedades con valores por defecto innecesarios**
-- **Líneas 20-25**: Propiedades inicializadas con valores que serán sobrescritos inmediatamente.
-- **Problema**: Código redundante, los valores iniciales nunca se usan.
-- **Impacto**: Confusión sobre el estado inicial real del componente.
-- **Solución**: Usar `undefined` o tipos opcionales hasta que lleguen los datos reales.
+**✅ MP-1: Inicialización de propiedades con valores por defecto innecesarios - RESUELTO**
+- **Líneas 20-25**: Propiedades inicializadas con valores que eran sobrescritos inmediatamente.
+- **Solución aplicada**: Eliminadas propiedades individuales, ahora se usa un único observable `state$` con async pipe.
 
 **MP-2: Múltiples responsabilidades en un componente**
 - **Componente completo**: Maneja estado, scroll, resize, y lógica de paginación.
@@ -126,9 +108,9 @@
 - El componente maneja: estado, scroll, resize, paginación, y renderizado.
 - **Solución**: Extraer responsabilidades a servicios o directivas.
 
-**SOLID-2: Violación de Dependency Inversion (DIP)**
+**✅ SOLID-2: Violación de Dependency Inversion (DIP) - RESUELTO**
 - **Línea 59**: Dependencia directa de `window` (detalle de implementación).
-- **Solución**: Inyectar abstracción (interface) en lugar de implementación concreta.
+- **Solución aplicada**: Implementado ViewportService como abstracción, ahora se inyecta la interfaz en lugar de acceder directamente a window.
 
 ### header.component.ts
 
@@ -142,10 +124,9 @@
 
 ### products.component.ts
 
-**CS-1: Feature Envy**
-- **Línea 36**: Componente crea instancia de ProductsStateBuilder directamente.
-- **Problema**: El componente conoce demasiado sobre cómo construir su estado.
-- **Solución**: Inyectar el builder o usar un servicio facade.
+**✅ CS-1: Feature Envy - RESUELTO**
+- **Línea 36**: Componente creaba instancia de ProductsStateBuilder directamente.
+- **Solución aplicada**: ProductsStateBuilder ahora es un servicio inyectable, mejorando la inyección de dependencias y testabilidad.
 
 **CS-2: Primitive Obsession**
 - **Líneas 16-18**: Constantes numéricas sin tipo semántico.
@@ -154,10 +135,9 @@
 
 ### header.component.ts
 
-**CS-3: Inappropriate Intimacy**
+**✅ CS-3: Inappropriate Intimacy - RESUELTO**
 - **Línea 42**: Acceso directo a `router.url` desde el getter.
-- **Problema**: Acoplamiento fuerte con implementación interna del Router.
-- **Solución**: Suscribirse a eventos de navegación y cachear el resultado.
+- **Solución aplicada**: Ahora se suscribe a eventos de navegación y cachea el resultado en una propiedad, reduciendo acoplamiento.
 
 ### welcome.component.ts
 
@@ -172,17 +152,15 @@
 
 ### header.component.ts
 
-**PR-1: Getter ejecutado en cada change detection**
-- **Línea 41**: `isProductsPage` se ejecuta múltiples veces por segundo.
-- **Impacto**: Comparaciones de strings innecesarias.
-- **Solución**: Calcular una vez y cachear, o usar observable.
+**✅ PR-1: Getter ejecutado en cada change detection - RESUELTO**
+- **Línea 41**: `isProductsPage` se ejecutaba múltiples veces por segundo.
+- **Solución aplicada**: Convertido a propiedad cacheada que solo se actualiza en eventos de navegación, mejorando rendimiento significativamente.
 
 ### products.component.ts
 
-**PR-2: Change detection manual innecesaria**
-- **Línea 43**: `cdr.detectChanges()` fuerza change detection completo.
-- **Impacto**: Puede causar re-renderizado innecesario de todo el árbol.
-- **Solución**: Usar OnPush strategy y async pipe.
+**✅ PR-2: Change detection manual innecesaria - RESUELTO**
+- **Línea 43**: `cdr.detectChanges()` forzaba change detection completo.
+- **Solución aplicada**: Implementado OnPush strategy con async pipe, eliminando la necesidad de change detection manual y mejorando el rendimiento.
 
 ### abstract-scroll.component.ts
 
@@ -197,19 +175,19 @@
 
 ### products.component.ts
 
-**PT-1: Difícil de testear por dependencia de window**
-- **Línea 59**: `window.innerWidth` requiere mock complejo.
-- **Solución**: Inyectar servicio de viewport.
+**✅ PT-1: Difícil de testear por dependencia de window - RESUELTO**
+- **Línea 59**: `window.innerWidth` requería mock complejo.
+- **Solución aplicada**: ViewportService ahora puede ser fácilmente mockeado en tests unitarios.
 
-**PT-2: Lógica en constructor de clase auxiliar**
-- **Línea 36**: `new ProductsStateBuilder(this.store)` dificulta mocking.
-- **Solución**: Inyectar el builder como dependencia.
+**✅ PT-2: Lógica en constructor de clase auxiliar - RESUELTO**
+- **Línea 36**: `new ProductsStateBuilder(this.store)` dificultaba mocking.
+- **Solución aplicada**: ProductsStateBuilder convertido en servicio inyectable, facilitando el testing con mocks.
 
 ### header.component.ts
 
-**PT-3: Router público dificulta testing**
-- **Línea 17**: Tests pueden acceder y modificar router directamente.
-- **Solución**: Hacer privado y exponer solo lo necesario.
+**✅ PT-3: Router público dificulta testing - RESUELTO**
+- **Línea 17**: Tests podían acceder y modificar router directamente.
+- **Solución aplicada**: Router ahora es privado, mejorando encapsulación y facilitando testing con mocks.
 
 ---
 
@@ -233,45 +211,108 @@
 
 ## Resumen de Métricas
 
-- **Antipatrones detectados**: 8
-- **Malas prácticas detectadas**: 7
-- **Violaciones SOLID**: 3
-- **Code Smells**: 4
-- **Problemas de rendimiento**: 3
-- **Problemas de testing**: 3
-- **Problemas de seguridad**: 2
+- **Antipatrones detectados**: 8 (8 resueltos ✅, 0 pendientes) ✅✅✅
+- **Malas prácticas detectadas**: 7 (1 resuelta ✅, 6 pendientes)
+- **Violaciones SOLID**: 3 (1 resuelta ✅, 2 pendientes)
+- **Code Smells**: 4 (2 resueltos ✅, 2 pendientes)
+- **Problemas de rendimiento**: 3 (2 resueltos ✅, 1 pendiente)
+- **Problemas de testing**: 3 (3 resueltos ✅, 0 pendientes) ✅✅✅
+- **Problemas de seguridad**: 2 (0 resueltos, 2 pendientes)
 
-**Total de issues**: 30
+**Total de issues**: 30 (17 resueltos ✅, 13 pendientes)
 
 ---
 
 ## Prioridades de Corrección
 
 ### 🔴 Alta Prioridad (Crítico)
-1. **AP-6**: Suscripción sin unsubscribe en app.ts
-2. **AP-3**: Suscripciones manuales sin cleanup automático
-3. **PS-2**: Validación de datos en drag & drop
-4. **PR-2**: Change detection manual innecesaria
+1. ✅ ~~**AP-1**: Manual change detection~~
+2. ✅ ~~**AP-2**: Acceso directo a window.innerWidth~~
+3. ✅ ~~**AP-3**: Suscripciones manuales sin cleanup automático~~
+4. ✅ ~~**AP-4**: Router público en constructor~~
+5. ✅ ~~**AP-5**: Getter con lógica de negocio~~
+6. ✅ ~~**AP-6**: Suscripción sin unsubscribe en app.ts~~
+7. ✅ ~~**PR-1**: Getter ejecutado en cada change detection~~
+8. ✅ ~~**PR-2**: Change detection manual innecesaria~~
+9. **PS-2**: Validación de datos en drag & drop
 
 ### 🟡 Media Prioridad (Importante)
-1. **AP-2**: Abstracción de window.innerWidth
-2. **AP-4**: Router público en header
-3. **AP-5**: Getter con lógica ejecutándose constantemente
-4. **MP-1**: Inicialización redundante de propiedades
-5. **MP-3**: Input sin validación
+1. ✅ ~~**CS-1**: Feature Envy en products component~~
+2. ✅ ~~**CS-3**: Inappropriate Intimacy~~
+3. ✅ ~~**PT-1**: Difícil de testear por dependencia de window~~
+4. ✅ ~~**PT-2**: Lógica en constructor de clase auxiliar~~
+5. ✅ ~~**PT-3**: Router público dificulta testing~~
+6. ✅ ~~**MP-1**: Inicialización redundante de propiedades~~
+7. ✅ ~~**SOLID-2**: Violación de Dependency Inversion~~
+8. ✅ ~~**AP-7**: Ruta hardcodeada en navegación~~
+9. **MP-3**: Input sin validación
 
 ### 🟢 Baja Prioridad (Mejora)
-1. **CS-1**: Feature Envy en products component
+1. ✅ ~~**AP-8**: setTimeout sin clearTimeout~~
 2. **CS-2**: Primitive Obsession
-3. **MP-4**: Lógica de UI en componente
-4. **MP-7**: Manejo de errores genérico
-5. **AP-7**: Rutas hardcodeadas
+3. **MP-2**: Múltiples responsabilidades en componente
+4. **MP-4**: Lógica de UI en componente
+5. **MP-5**: Métodos que hacen múltiples cosas
+6. **MP-6**: Lógica de negocio en evento de UI
+7. **MP-7**: Manejo de errores genérico
+8. **PR-3**: Debounce time muy bajo
+9. **SOLID-1**: Violación de Single Responsibility
+10. **SOLID-3**: Violación de Open/Closed Principle
+11. **CS-4**: Lazy Class
+12. **PS-1**: Datos no sanitizados en drag & drop
+
+---
+
+## Mejoras Implementadas
+
+### ✅ Cleanup de Suscripciones (app.ts)
+
+**Cambios realizados:**
+1. Implementado patrón `takeUntil` con Subject `destroy$`
+2. Agregado `OnDestroy` lifecycle hook
+3. Suscripción ahora se limpia automáticamente en ngOnDestroy
+
+**Beneficios:**
+- ✅ Previene memory leaks
+- ✅ Sigue mejores prácticas de Angular
+- ✅ Patrón reutilizable en otros componentes
+- ✅ Cleanup automático y predecible
+
+**Cambios realizados:**
+1. Creado `ViewportService` con métodos:
+   - `getWidth()`: Obtiene ancho actual
+   - `getWidth$()`: Observable del ancho con resize events
+   - `isMobile(breakpoint)`: Verifica si es viewport móvil
+2. Inyectado ViewportService en products.component.ts
+3. Reemplazado `window.innerWidth` por `viewportService.isMobile()`
+
+**Beneficios:**
+- ✅ Fácil de mockear en tests unitarios
+- ✅ Aplica Dependency Inversion Principle
+- ✅ Reutilizable en otros componentes
+- ✅ Incluye observable para reactividad
+- ✅ Encapsula lógica de viewport
+
+**Cambios realizados:**
+1. Agregado `ChangeDetectionStrategy.OnPush` al decorador del componente
+2. Convertido `ProductsStateBuilder` en servicio inyectable
+3. Eliminadas 6 propiedades individuales (products, error, isLoading, etc.)
+4. Creado observable único `state$` que se consume con async pipe
+5. Eliminada llamada manual a `cdr.detectChanges()`
+6. Eliminada suscripción manual y su cleanup
+
+**Beneficios:**
+- ✅ Mejor rendimiento (OnPush solo detecta cambios cuando cambian inputs o eventos)
+- ✅ Código más limpio y declarativo
+- ✅ No más memory leaks por suscripciones olvidadas
+- ✅ Mejor testabilidad (ProductsStateBuilder ahora es mockeable)
+- ✅ Menos código (eliminadas ~15 líneas)
 
 ---
 
 ## Recomendaciones Generales
 
-### 1. Adoptar OnPush Change Detection Strategy
+### 1. ✅ Adoptar OnPush Change Detection Strategy - IMPLEMENTADO
 - Mejoraría rendimiento significativamente
 - Forzaría uso de async pipe (mejor práctica)
 - Eliminaría necesidad de `cdr.detectChanges()`
@@ -300,11 +341,12 @@
 
 ## Conclusión
 
-El código tiene una base sólida con buenas prácticas en arquitectura (NgRx, separación de concerns), pero presenta varios antipatrones y malas prácticas que pueden afectar:
+El código ha mejorado significativamente con la implementación de OnPush y async pipe. Se resolvieron 7 de 30 issues identificados, incluyendo los más críticos relacionados con rendimiento y memory leaks.
 
-- **Mantenibilidad**: Componentes con múltiples responsabilidades
-- **Rendimiento**: Change detection manual y getters costosos
-- **Testing**: Dependencias difíciles de mockear
-- **Seguridad**: Falta de validación en algunos puntos
+**Estado actual:**
+- **Mantenibilidad**: Mejorada con servicios inyectables
+- **Rendimiento**: Optimizado con OnPush strategy
+- **Testing**: Facilitado con dependencias inyectables
+- **Seguridad**: Pendiente validación en drag & drop
 
-La mayoría de los issues son de severidad media-baja y pueden corregirse gradualmente sin afectar el funcionamiento actual de la aplicación.
+Los 23 issues restantes son de severidad media-baja y pueden corregirse gradualmente sin afectar el funcionamiento actual de la aplicación.
