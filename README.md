@@ -7,8 +7,10 @@
 
 Modern e-commerce application built with Angular 21, featuring state management with NgRx, drag-and-drop functionality, and clean architecture principles.
 
+
 ## 📋 Table of Contents
 
+- [Live Demo](#live-demo)
 - [Overview](#overview)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
@@ -17,6 +19,12 @@ Modern e-commerce application built with Angular 21, featuring state management 
 - [Docker Deployment](#docker-deployment)
 - [Project Structure](#project-structure)
 - [Code Quality](#code-quality)
+
+## 🌐 Live Demo
+
+**The application is deployed and available at:**
+
+🔗 **http://3.137.216.239/**
 
 ## 🎯 Overview
 
