@@ -9,7 +9,8 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
-RUN npm run build -- --configuration=production
+# Build with production configuration (minified & obfuscated)
+RUN npm run build
 
 # Stage 2: Production
 FROM nginx:alpine
